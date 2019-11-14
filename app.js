@@ -1,6 +1,7 @@
 // BUDGET CONTROLLER
 var budgetController = (function() {
 
+    //private
     var Expense = function(id, description, value) {
         this.id = id;
         this.description = description;
@@ -13,31 +14,54 @@ var budgetController = (function() {
         this.value = value;
     };
 
-    var data = {
-        allItems: {
-            exp: [],
+    var data = {//this DS is private, so add
+        allItems: {//method to return statement
+            exp: [],//so that it can be accessed pubicly
             inc: []
         },
         totals: {
             exp: 0,
             inc: 0
         }
-    }
+    };
 
-   /* var x = 23;
+    //public
+    return {
+        addItem: function(type, des, val) {
+            var newItem, ID;
 
-    var add = function(a) {
-        return x + a;
-    }
+            //select last id in array
+            //create new ID
+            if(data.allItems[type].length > 0)
+            {
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+            }
+            else 
+            {
+                ID = 0;
+            }
+          
+            //create new item based on 'inc' or 'exp' type
+            if(type === 'exp')
+            {
+                newItem = new Expense(ID, des, val);
+            }
+            else if (type === 'inc')
+            {
+                newItem = new Income(ID, des, val);
+            }
+            
+            //push it into our data structure
+            data.allItems[type].push(newItem);
 
-    return {//publicTest is exposed to outer scope
-        publicTest: function(b) {
-            return add(b);
-        }//return an object
-    }*/
-    //publicTest is a closure, it has access
-//to x and add() even when the IIFE has 
-//already returned
+            //return the new element
+            return newItem;
+        },
+
+        testing: function() {
+            console.log(data);
+        }
+    };
 
 })();
 //this is an IIFE, scope is not 
@@ -46,11 +70,6 @@ var budgetController = (function() {
 //containing all the functions
 //that we want to be public
 //outer scope access
-
-//budgetController gets assigned the object
-//when the IIFE returns
-
-//budgetController.publicTest(5);//28
 
 // UI CONTROLLER
 var UIController = (function() {
@@ -62,6 +81,7 @@ var UIController = (function() {
         inputBtn: '.add__btn'
     };
     
+    //public
     return {
         getInput: function() {// can access this method publicly
             return {
@@ -69,29 +89,28 @@ var UIController = (function() {
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: document.querySelector(DOMstrings.inputValue).value
                 };
-            },
+        },
 
-            getDOMstrings: function() {
-                return DOMstrings;//expose this to public
-            }
+        addListItem: function(obj, type) {
+
+            // Create HTML string with placeholder text
+
+            // Replace placeholder text with some actual data
+
+            // Insert HTML into the DOM
+
+        },
+
+        getDOMstrings: function() {
+            return DOMstrings;//expose this to public
+        }
     };
 
 })();
-
 //these 2 controllers don't know about each other
-
 // GLOBAL APP CONTROLLER, tells other modules what to do
 var controller = (function(budgetCtrl, UICtrl) {
 
-    /*var z = budgetCtrl.publicTest(5);
-
-    return {
-        anotherPublic: function() {
-            console.log(z);
-        }
-    }*/
-
-    //function where all event listeners are placed
     var setupEventListeners = function() {
         var DOM = UICtrl.getDOMstrings();
 
@@ -101,20 +120,19 @@ var controller = (function(budgetCtrl, UICtrl) {
         {
             if(event.keyCode === 13 || event.which === 13) {
                 ctrlAddItem();
-                console.log('what');
             }
 
         });
     };
 
-    
-
     var ctrlAddItem = function() {
-        // 1. Get the filed input data
-        var input = UICtrl.getInput();
-    
+        var input, newItem;
 
+        // 1. Get the filed input data
+        input = UICtrl.getInput();
+    
         // 2. Add the item to the budget controller
+        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
         // 3. Add the item to the UI
 
