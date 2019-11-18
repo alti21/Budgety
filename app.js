@@ -11,9 +11,8 @@ var budgetController = (function() {
 
     //Add this function to prototype chain so that all 
     //objects made from the function constructor 
-    //will inherit this function
+    //will inherit this function, no need to keep on redefining calcPercentage
     Expense.prototype.calcPercentage = function(totalIncome) {
-
         if(totalIncome > 0)
         {
             this.percentage = Math.round((this.value / totalIncome) * 100);
@@ -25,7 +24,6 @@ var budgetController = (function() {
     };
 
     Expense.prototype.getPercentage = function() {
-
         return this.percentage;
     }
 
@@ -38,7 +36,7 @@ var budgetController = (function() {
     var calculateTotal = function(type) {
         var sum = 0;
         data.allItems[type].forEach(function(current){
-            sum += current.value;//current refers to the array element
+            sum += current.value;//current refers to the array element, current.valoe of either inc object or exp object 
         });
         data.totals[type] = sum;
     };
@@ -47,7 +45,7 @@ var budgetController = (function() {
     var data = {//this DS is private, so add
         allItems: {//method to return statement
             exp: [],//so that it can be accessed pubicly
-            inc: []
+            inc: []//these are arrays of objects
         },
         totals: {
             exp: 0,
@@ -61,14 +59,13 @@ var budgetController = (function() {
     return {
         addItem: function(type, des, val) {
             var newItem, ID;
-
             //select last id in array
             //create new ID
             if(data.allItems[type].length > 0)
             {
                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
             }
-            else 
+            else // if no income or expenses
             {
                 ID = 0;
             }
@@ -201,7 +198,8 @@ var UIController = (function() {
         expenseLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel: '.item__percentage'
+        expensesPercLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
     };
 
     var formatNumber = function(num, type) {
@@ -335,6 +333,17 @@ var UIController = (function() {
 
         },
 
+        displayMonth: function() {
+            var now, months, month, year;
+            now = new Date();//store today's date
+
+            months = ['January', 'February', 'March', 'April', 'May', 'June' , 'July', 'August', 'September', 'October', 'November', 'December'];
+            month = now.getMonth();
+
+            year = now.getFullYear();
+            document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
+
      
         getDOMstrings: function() {
             return DOMstrings;//expose this to public
@@ -457,6 +466,7 @@ var controller = (function(budgetCtrl, UICtrl) {
     return {
         init: function() {
             console.log('app has started');
+            UICtrl.displayMonth();
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
