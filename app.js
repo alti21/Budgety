@@ -69,6 +69,34 @@ var budgetController = (function() {
             return newItem;
         },
 
+        deleteItem: function(type, id) {
+            var ids, index; 
+
+            // id = 8
+            //data.allItems[type][id]
+            // ids = [1 2 4 8 9]
+            // index = 3
+            //the following code will delete id # 8
+            // from ids array
+
+            //map returns a new array, unlike forEach
+             ids = data.allItems[type].map(function(current) {
+                return current.id;
+             });
+
+             index = ids.indexOf(id);//get index of element we
+             //want to remove
+
+             if (index !== -1) {
+                 //1st arg is position that we want to 
+                 //start deleting elements from
+                 //2nd arg is amount of elements that
+                 //we want to delete
+                 data.allItems[type].splice(index, 1);
+             }
+
+        },
+
         calculateBudget: function() {
 
             // calculate total income and expenses
@@ -125,7 +153,8 @@ var UIController = (function() {
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expenseLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     };
     
     //public
@@ -146,12 +175,12 @@ var UIController = (function() {
             if (type === 'inc')
             {
                 element = DOMstrings.incomeContainer;
-                html = '<div class="item clearfix" id="income-%id&"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             else if (type === 'exp')
             {
                 element = DOMstrings.expensesContainer;
-                html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             
             // Replace placeholder text with some actual data
@@ -215,6 +244,14 @@ var controller = (function(budgetCtrl, UICtrl) {
             }
 
         });
+
+        //this event is attached to the parent element that has class="container"
+        //we are interested in the delete icon
+        //but we still attach the eventListener to the parent element instead
+        //of the icon element
+        //we are actually ineterested in another parent element of the icon,
+        //the div with id="income-#"
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     };
 
     var updateBudget = function() {
@@ -252,6 +289,36 @@ var controller = (function(budgetCtrl, UICtrl) {
         }
 
     
+    };
+
+    var ctrlDeleteItem = function(event) {
+
+        var itemID, splitID, type, ID;
+
+        
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;////////////////////////////////////
+
+        if (itemID) {
+
+            //returns array, 1st element is part of string that comes before '-'
+            //2nd element is part of string that comes after '-' 
+            //if string has multiple '-', then split returns array
+            //of all parts of string that are around and between '-'
+            splitID = itemID.split('-');//this is a string
+            type = splitID[0];//type is inc or exp
+            ID =  parseInt(splitID[1]);
+
+            // 1. delete the item from the data structure
+            budgetCtrl.deleteItem(type, ID);
+
+            // 2. Delete item from UI
+
+
+            // 3. Update and show the new budget
+
+
+        }
+
     };
 
 
