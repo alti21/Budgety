@@ -33,10 +33,16 @@ body {
 
 .top {
     height: 40vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png);
+    /*background-image: linear-gradient(#0B486B, #F56217);linear-gradient(#2C3E50, #FD746C);*/
     background-size: cover;
     background-position: center;
     position: relative;
+}
+.income__bg {
+    background-image: linear-gradient(#2C3E50, #4CA1AF);
+}
+.expense__bg {
+    background-image: linear-gradient(#2C3E50, #FD746C);
 }
 
 .budget {

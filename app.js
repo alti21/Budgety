@@ -212,7 +212,7 @@ var UIController = (() => {
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
         expensesPercLabel: '.item__percentage',
-        dateLabel: '.budget__title--month'
+        dateLabel: '.budget__title--month',
     };
 
     const formatNumber = (num, type) => {
@@ -268,6 +268,7 @@ var UIController = (() => {
 
             if (type === 'inc')
             {
+                console.log(type);
                 element = DOMstrings.incomeContainer;
                 html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
@@ -291,6 +292,19 @@ var UIController = (() => {
 
             let el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
+        },
+
+        changeBg: () => {
+            if(document.querySelector(DOMstrings.inputType).options.selectedIndex  === 0)
+            {
+                document.querySelector('.top').classList.remove('expense__bg');
+                document.querySelector('.top').classList.add('income__bg');
+            }
+            else 
+            {
+                document.querySelector('.top').classList.remove('income__bg');
+                document.querySelector('.top').classList.add('expense__bg');
+            }
         },
 
         clearfields: () => {
@@ -371,6 +385,17 @@ var UIController = (() => {
             });
 
             document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
+
+            if(document.querySelector(DOMstrings.inputType).options.selectedIndex  === 0)
+            {
+                document.querySelector('.top').classList.remove('expense__bg');
+                document.querySelector('.top').classList.add('income__bg');
+            }
+            else 
+            {
+                document.querySelector('.top').classList.remove('income__bg');
+                document.querySelector('.top').classList.add('expense__bg');
+            }
 
         },
      
