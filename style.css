@@ -30,13 +30,19 @@ body {
 /**********************************************
 *** TOP PART
 **********************************************/
-
+#app__title {
+    font-size: 2rem;
+    margin-bottom: .5em;
+}
 .top {
-    height: 40vh;
+    height: 50vh;
     /*background-image: linear-gradient(#0B486B, #F56217);linear-gradient(#2C3E50, #FD746C);*/
     background-size: cover;
     background-position: center;
     position: relative;
+}
+.base__bg {
+    background-image: linear-gradient(#2C3E50, deepskyblue);
 }
 .income__bg {
     background-image: linear-gradient(#2C3E50, #4CA1AF);
@@ -123,6 +129,9 @@ body {
     padding: 14px;
     border-bottom: 1px solid #e7e7e7;
     background-color: #f7f7f7;
+    width: 90vw;
+    margin: 0 auto;
+    border-radius: 30px;
 }
 
 .add__container {
@@ -143,7 +152,8 @@ body {
 }
 
 .add__description,
-.add__value {
+.add__value,
+.add_category {
     border: 1px solid #e7e7e7;
     background-color: #fff;
     color: inherit;
@@ -155,7 +165,7 @@ body {
     transition: border 0.3s;
 }
 
-.add__description { width: 400px;}
+.add__description { width: 300px;}
 .add__value { width: 100px;}
 
 .add__btn {

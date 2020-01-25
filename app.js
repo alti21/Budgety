@@ -1,21 +1,23 @@
 // BUDGET CONTROLLER
 var budgetController = (() => {
 
+    //private
     class Common 
     { 
-        constructor(id, description, value)
+        constructor(id, description, value, category)
         {
             this.id = id;
             this.description = description;
             this.value = value;
+            this.category = category;
         }
     }
 
     class Expense extends Common 
     {
-        constructor(id, description, value, percentage)
+        constructor(id, description, value, category, percentage)
         {
-            super(id, description, value);
+            super(id, description, value, category);
             this.percentage = -1;
         }
 
@@ -40,9 +42,9 @@ var budgetController = (() => {
 
     class Income extends Common 
     {
-        constructor(id, description, value)
+        constructor(id, description, value, category)
         {
-            super(id, description, value);
+            super(id, description, value, category);
         }
     }
   
@@ -70,7 +72,7 @@ var budgetController = (() => {
 
     //public
     return {
-        addItem: (type, des, val) => {
+        addItem: (type, des, val, ctgry) => {
             let newItem, ID;
             //select last id in array
             //create new ID
@@ -86,11 +88,11 @@ var budgetController = (() => {
             //create new item based on 'inc' or 'exp' type
             if(type === 'exp')
             {
-                newItem = new Expense(ID, des, val);
+                newItem = new Expense(ID, des, val, ctgry);
             }
             else if (type === 'inc')
             {
-                newItem = new Income(ID, des, val);
+                newItem = new Income(ID, des, val, ctgry);
             }
             
             //push it into our data structure
@@ -198,7 +200,7 @@ var budgetController = (() => {
 
 // UI CONTROLLER
 var UIController = (() => {
-
+    //private
     const DOMstrings = {//this is a private object
         inputType: '.add__type',
         inputDescription: '.add__description',
@@ -213,6 +215,7 @@ var UIController = (() => {
         container: '.container',
         expensesPercLabel: '.item__percentage',
         dateLabel: '.budget__title--month',
+        inputCategory: '.add_category'
     };
 
     const formatNumber = (num, type) => {
@@ -257,7 +260,8 @@ var UIController = (() => {
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
-                value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
+                value: parseFloat(document.querySelector(DOMstrings.inputValue).value),
+                category: document.querySelector(DOMstrings.inputCategory).options[document.querySelector(DOMstrings.inputCategory).options.selectedIndex].text
                 };
         },
 
@@ -270,17 +274,17 @@ var UIController = (() => {
             {
                 console.log(type);
                 element = DOMstrings.incomeContainer;
-                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = `<div class="item clearfix" id="inc-%id%"><div class="item__description">${obj.description}</div>&nbsp<span>%category%</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
             }
             else if (type === 'exp')
             {
                 element = DOMstrings.expensesContainer;
-                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = `<div class="item clearfix" id="exp-%id%"><div class="item__description">${obj.description}</div>&nbsp<span>%category%</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
             }
             
             // Replace placeholder text with some actual data
             newHtml = html.replace('%id%',obj.id);
-            newHtml = newHtml.replace('%description%',obj.description);
+           // newHtml = newHtml.replace('%description%',obj.description);
             newHtml = newHtml.replace('%value%', formatNumber(obj.value,type));
 
             // Insert HTML into the DOM
@@ -292,19 +296,6 @@ var UIController = (() => {
 
             let el = document.getElementById(selectorID);
             el.parentNode.removeChild(el);
-        },
-
-        changeBg: () => {
-            if(document.querySelector(DOMstrings.inputType).options.selectedIndex  === 0)
-            {
-                document.querySelector('.top').classList.remove('expense__bg');
-                document.querySelector('.top').classList.add('income__bg');
-            }
-            else 
-            {
-                document.querySelector('.top').classList.remove('income__bg');
-                document.querySelector('.top').classList.add('expense__bg');
-            }
         },
 
         clearfields: () => {
@@ -343,9 +334,6 @@ var UIController = (() => {
 
             //returns HTML collection or nodeList
             let fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
-
-           
-
 
             nodeListForEach(fields, (current, index) => {
 
@@ -388,11 +376,13 @@ var UIController = (() => {
 
             if(document.querySelector(DOMstrings.inputType).options.selectedIndex  === 0)
             {
+                document.querySelector('.top').classList.remove('base__bg');
                 document.querySelector('.top').classList.remove('expense__bg');
                 document.querySelector('.top').classList.add('income__bg');
             }
             else 
             {
+                document.querySelector('.top').classList.remove('base__bg');
                 document.querySelector('.top').classList.remove('income__bg');
                 document.querySelector('.top').classList.add('expense__bg');
             }
@@ -418,8 +408,9 @@ var controller = ((budgetCtrl, UICtrl) => {
         {
             if(event.keyCode === 13 || event.which === 13) {
                 ctrlAddItem();
+                  
+               
             }
-
         });
 
         //this event is attached to the parent element that has class="container"
@@ -463,9 +454,10 @@ var controller = ((budgetCtrl, UICtrl) => {
 
         // 1. Get the filed input data
         input = UICtrl.getInput();
+       // input.category
     
-        if(input.description !== "" && !isNaN(input.value) && input.value > 0)//if description is not empty and value is a positive number
-        {
+        if(input.description !== "" && !isNaN(input.value) && input.value > 0 && input.category !== "Select Category")//if description is not empty and value is a positive number
+        {   console.log(input.category);
             // 2. Add the item to the budget controller
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
