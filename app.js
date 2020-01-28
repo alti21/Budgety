@@ -272,14 +272,13 @@ var UIController = (() => {
 
             if (type === 'inc')
             {
-                console.log(type);
                 element = DOMstrings.incomeContainer;
-                html = `<div class="item clearfix" id="inc-%id%"><div class="item__description">${obj.description}</div>&nbsp<span>%category%</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
+                html = `<div class="item clearfix" id="inc-%id%"><div class="item__description">${obj.description}</div>&nbsp<span class="item__category--inc">${obj.category}</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
             }
             else if (type === 'exp')
             {
                 element = DOMstrings.expensesContainer;
-                html = `<div class="item clearfix" id="exp-%id%"><div class="item__description">${obj.description}</div>&nbsp<span>%category%</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
+                html = `<div class="item clearfix" id="exp-%id%"><div class="item__description">${obj.description}</div>&nbsp<span class="item__category--exp">${obj.category}</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
             }
             
             // Replace placeholder text with some actual data
@@ -376,15 +375,15 @@ var UIController = (() => {
 
             if(document.querySelector(DOMstrings.inputType).options.selectedIndex  === 0)
             {
-                document.querySelector('.top').classList.remove('base__bg');
-                document.querySelector('.top').classList.remove('expense__bg');
-                document.querySelector('.top').classList.add('income__bg');
+                
+                document.querySelector('body').classList.remove('expense__bg');
+                document.querySelector('body').classList.add('income__bg');
             }
             else 
             {
-                document.querySelector('.top').classList.remove('base__bg');
-                document.querySelector('.top').classList.remove('income__bg');
-                document.querySelector('.top').classList.add('expense__bg');
+                
+                document.querySelector('body').classList.remove('income__bg');
+                document.querySelector('body').classList.add('expense__bg');
             }
 
         },
@@ -459,7 +458,7 @@ var controller = ((budgetCtrl, UICtrl) => {
         if(input.description !== "" && !isNaN(input.value) && input.value > 0 && input.category !== "Select Category")//if description is not empty and value is a positive number
         {   console.log(input.category);
             // 2. Add the item to the budget controller
-            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value, input.category);
 
             // 3. Add the item to the UI
             UICtrl.addListItem(newItem,input.type);
