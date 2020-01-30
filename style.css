@@ -47,7 +47,10 @@ body {
 .expense__bg {
     background-image: linear-gradient( #FD746C, rgb(255, 255, 255));
 }
-
+#important {
+    margin-left: 10px;
+    color: red;
+}
 .budget {
     position: absolute;
     width: 350px;

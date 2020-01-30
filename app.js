@@ -4,20 +4,21 @@ var budgetController = (() => {
     //private
     class Common 
     { 
-        constructor(id, description, value, category)
+        constructor(id, description, value, category, important)
         {
             this.id = id;
             this.description = description;
             this.value = value;
             this.category = category;
+            this.important = important;
         }
     }
 
     class Expense extends Common 
     {
-        constructor(id, description, value, category, percentage)
+        constructor(id, description, value, category, important, percentage)
         {
-            super(id, description, value, category);
+            super(id, description, value, category, important);
             this.percentage = -1;
         }
 
@@ -42,9 +43,9 @@ var budgetController = (() => {
 
     class Income extends Common 
     {
-        constructor(id, description, value, category)
+        constructor(id, description, value, category, important)
         {
-            super(id, description, value, category);
+            super(id, description, value, category, important);
         }
     }
   
@@ -72,7 +73,7 @@ var budgetController = (() => {
 
     //public
     return {
-        addItem: (type, des, val, ctgry) => {
+        addItem: (type, des, val, ctgry, i) => {
             let newItem, ID;
             //select last id in array
             //create new ID
@@ -88,11 +89,11 @@ var budgetController = (() => {
             //create new item based on 'inc' or 'exp' type
             if(type === 'exp')
             {
-                newItem = new Expense(ID, des, val, ctgry);
+                newItem = new Expense(ID, des, val, ctgry, i);
             }
             else if (type === 'inc')
             {
-                newItem = new Income(ID, des, val, ctgry);
+                newItem = new Income(ID, des, val, ctgry, i);
             }
             
             //push it into our data structure
@@ -215,7 +216,8 @@ var UIController = (() => {
         container: '.container',
         expensesPercLabel: '.item__percentage',
         dateLabel: '.budget__title--month',
-        inputCategory: '.add_category'
+        inputCategory: '.add_category',
+        inputImportant: '#important'
     };
 
     const formatNumber = (num, type) => {
@@ -261,29 +263,48 @@ var UIController = (() => {
                 type: document.querySelector(DOMstrings.inputType).value, // will be either inc or exp
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: parseFloat(document.querySelector(DOMstrings.inputValue).value),
-                category: document.querySelector(DOMstrings.inputCategory).options[document.querySelector(DOMstrings.inputCategory).options.selectedIndex].text
+                category: document.querySelector(DOMstrings.inputCategory).options[document.querySelector(DOMstrings.inputCategory).options.selectedIndex].text,
+                important: () => {
+                    if(document.querySelector(DOMstrings.inputImportant).checked)
+                    {
+                        return `<i class="fas fa-exclamation-circle" id="important"></i>`;
+                    }
+                    else 
+                    {
+                        return ``;
+                    }
+                }
+                        
+                        
+                    
                 };
         },
 
         addListItem: (obj, type) => {
-            let html, newHtml, element;
+            let html, newHtml, element, i;
 
+            //add important tag to item that has been marked as important
+            if(document.querySelector(DOMstrings.inputImportant).checked)
+            {
+                
+            }
+            
             // Create HTML string with placeholder text
-
             if (type === 'inc')
             {
                 element = DOMstrings.incomeContainer;
-                html = `<div class="item clearfix" id="inc-%id%"><div class="item__description">${obj.description}</div>&nbsp<span class="item__category--inc">${obj.category}</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
+            html = `<div class="item clearfix" id="inc-%id%"><div class="item__description">${obj.description}</div>&nbsp<span class="item__category--inc">${obj.category}</span><span>%important%</span><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
             }
             else if (type === 'exp')
             {
                 element = DOMstrings.expensesContainer;
                 html = `<div class="item clearfix" id="exp-%id%"><div class="item__description">${obj.description}</div>&nbsp<span class="item__category--exp">${obj.category}</span> <div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>`;
             }
+
             
             // Replace placeholder text with some actual data
             newHtml = html.replace('%id%',obj.id);
-           // newHtml = newHtml.replace('%description%',obj.description);
+            newHtml = newHtml.replace('%important%',obj.important);
             newHtml = newHtml.replace('%value%', formatNumber(obj.value,type));
 
             // Insert HTML into the DOM
@@ -407,8 +428,6 @@ var controller = ((budgetCtrl, UICtrl) => {
         {
             if(event.keyCode === 13 || event.which === 13) {
                 ctrlAddItem();
-                  
-               
             }
         });
 
@@ -456,9 +475,9 @@ var controller = ((budgetCtrl, UICtrl) => {
        // input.category
     
         if(input.description !== "" && !isNaN(input.value) && input.value > 0 && input.category !== "Select Category")//if description is not empty and value is a positive number
-        {   console.log(input.category);
+        {   
             // 2. Add the item to the budget controller
-            newItem = budgetCtrl.addItem(input.type, input.description, input.value, input.category);
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value, input.category, input.important);
 
             // 3. Add the item to the UI
             UICtrl.addListItem(newItem,input.type);
