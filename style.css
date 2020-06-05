@@ -38,6 +38,9 @@ body {
     background-position: center;
     position: relative;
 }
+.base_bg {
+    background-image: linear-gradient(#2C3E50, #FD746C);
+}
 .income__bg {
     background-image: linear-gradient(#2C3E50, #4CA1AF);
 }

@@ -388,11 +388,13 @@ var UIController = (() => {
 
             if(document.querySelector(DOMstrings.inputType).options.selectedIndex  === 0)
             {
+                document.querySelector('.top').classList.remove('base__bg');
                 document.querySelector('.top').classList.remove('expense__bg');
                 document.querySelector('.top').classList.add('income__bg');
             }
             else 
             {
+                document.querySelector('.top').classList.remove('base_bg');
                 document.querySelector('.top').classList.remove('income__bg');
                 document.querySelector('.top').classList.add('expense__bg');
             }
