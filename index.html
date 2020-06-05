@@ -4,14 +4,16 @@
         <meta charset="UTF-8">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600" rel="stylesheet" type="text/css">
         <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
+        <script src="https://kit.fontawesome.com/78950b6ecd.js" crossorigin="anonymous"></script>
         <link type="text/css" rel="stylesheet" href="style.css">
         <title>Budgety</title>
     </head>
-    <body>
+    <body class="income__bg">
         
         <div class="top base_bg">
             <div class="budget">
                 <div class="budget__title">
+                    <div id="app__title"><strong>Welcome to Budgety!</strong></div>
                     Available Budget in <span class="budget__title--month">%Month%</span>:
                 </div>
                 
@@ -46,6 +48,17 @@
                     </select>
                     <input type="text" class="add__description" placeholder="Add description">
                     <input type="number" class="add__value" placeholder="Value">
+                    <select class="add_category">
+                        <option>Select Category</option>
+                        <option>Salary</option>
+                        <option>Business</option>
+                        <option>Travel</option>
+                        <option>Automobile</option>
+                        <option>Food</option>
+                        <option>Entertainment</option>
+                    </select>
+                    <label for="important">Mark as Important</label>
+                    <input type="checkbox" id="important">
                     <button class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
                 </div>
             </div>
